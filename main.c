@@ -2,6 +2,7 @@
 #include "Buzzer.h" 
 #include "Uart.h"
 #include "Adc.h"
+extern int val;
 
 int main(void){
 	
@@ -13,9 +14,10 @@ int main(void){
 	
 	while(1){ // infinate loop
 		adcRead(adcSelect());
-
 		printVoltage(ADC0->R[0]);
-
+		
+		if(val == 1)
+			play_buzzer();
 		
 	}
 }

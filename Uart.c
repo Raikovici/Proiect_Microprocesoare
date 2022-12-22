@@ -1,5 +1,6 @@
 #include "Uart.h"
-
+#include "Buzzer.h"
+extern int val;
 void UART0_Transmit(uint8_t data)
 {
 	//Punem in asteptare pana cand registrul de transmisie a datelor nu este gol
@@ -11,8 +12,9 @@ void UART0_Transmit(uint8_t data)
 uint8_t UART0_Receive(void)
 {
 	//Punem in asteptare pana cand registrul de receptie nu este plin
+	
 	while(!(UART0->S1 & UART0_S1_RDRF_MASK));
-				return UART0->D;
+		return UART0->D;
 	
 }
 
@@ -68,6 +70,17 @@ void UART0_Init(uint32_t baud_rate)
 	
 	UART0->C2 |= ((UART_C2_RE_MASK) | (UART_C2_TE_MASK));
 	
-	//NVIC_EnableIRQ(UART0_IRQn);
+	NVIC_EnableIRQ(UART0_IRQn);
 	
+}
+
+void UART0_IRQHandler() {
+	if(UART0->S1 & UART0_S1_RDRF_MASK) {
+		val = UART0->D;
+		if(val != 0) {
+			val = 0;
+		}
+		else 
+			val = 1;
+	}
 }
